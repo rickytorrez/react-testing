@@ -27,7 +27,7 @@ test('renders without error', () => {
 	expect(appComponent.length).toBe(1);
 });
 
-test('renders button', () => {
+test('renders increment button', () => {
 	const wrapper = setup();
 	const button = findByTestAttr(wrapper, 'increment-button');
 	expect(button.length).toBe(1);
@@ -59,4 +59,32 @@ test('clicking on button increments counter display', () => {
 
 	// test that the number has been incremented
 	expect(count).toBe('1');
+});
+
+test('renders decrement button', () => {
+	const wrapper = setup();
+
+	// find the button
+	const button = findByTestAttr(wrapper, 'decrement-button');
+
+	// test that the button exists
+	expect(button.length).toBe(1);
+});
+
+test('clicking on button decrements counter display', () => {
+	const wrapper = setup();
+
+	// find the button
+	const button = findByTestAttr(wrapper, 'decrement-button');
+
+	// click the button
+	button.simulate('click');
+
+	// find the count
+	const count = findByTestAttr(wrapper, 'count').text();
+
+	console.log(wrapper.debug());
+
+	// test that the number has decreased
+	expect(count).toBe('-1');
 });

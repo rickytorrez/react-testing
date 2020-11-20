@@ -8,6 +8,10 @@ function App() {
 		return setCount(count + 1);
 	};
 
+	const decrementCount = () => {
+		return setCount(count - 1);
+	};
+
 	return (
 		<div data-test='component-app'>
 			<h1 data-test='counter-display'>
@@ -16,6 +20,9 @@ function App() {
 			</h1>
 			<button data-test='increment-button' onClick={incrementCount}>
 				Increment
+			</button>
+			<button data-test='decrement-button' onClick={decrementCount}>
+				Decrement
 			</button>
 		</div>
 	);
