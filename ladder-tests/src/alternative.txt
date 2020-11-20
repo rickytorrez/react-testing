@@ -1,0 +1,68 @@
+import React from 'react';
+import Enzyme, { shallow } from 'enzyme';
+// Adapter
+import Adapter from 'enzyme-adapter-react-16';
+
+// Axios
+import axios from 'axios';
+
+// Fetch posts
+import fetchPosts from './services/fetchPosts';
+
+import App from './App';
+
+// Set up Enzyme's React adapter
+Enzyme.configure({ adapter: new Adapter() });
+
+// jest mock axios
+jest.mock('axios');
+
+test('renders component without error', () => {
+	const wrapper = shallow(<App />);
+	const appComponent = wrapper.find("[data-test='component-app']");
+	expect(appComponent.length).toBe(1);
+});
+
+test('renders a Get User button', () => {
+	const wrapper = shallow(<App />);
+	const button = wrapper.find("[data-test='get-user-button']");
+	expect(button.length).toBe(1);
+});
+
+test('clicking on button updates the user state', () => {
+	const wrapper = shallow(<App />);
+
+	// find the button
+	const button = wrapper.find("[data-test='get-user-button']");
+
+	// click the button
+	button.simulate('click');
+
+	// find the user attribute
+	const user = wrapper.find("[data-test='user-name']").text();
+
+	// test that the attribute has been updated
+	expect(user).toBe('John Doe');
+});
+
+test('mocking an API call with fixture data', async () => {
+	axios.get.mockResolvedValue({
+		data: [
+			{
+				userId: 1,
+				id: 1,
+				title:
+					'sunt aut facere repellat provident occaecati excepturi optio reprehenderit',
+				body:
+					'quia et suscipit suscipit recusandae consequuntur expedita et cum reprehenderit molestiae ut ut quas totam nostrum rerum est autem sunt rem eveniet architecto',
+			},
+		],
+	});
+
+	// await to get the post title
+	const posts = await fetchPosts();
+
+	expect(posts[0].title).toBe(
+		'sunt aut facere repellat provident occaecati excepturi optio reprehenderit'
+	);
+});
