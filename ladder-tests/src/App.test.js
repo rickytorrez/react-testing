@@ -25,6 +25,10 @@ test('renders a Get User button', () => {
 	expect(button.length).toBe(1);
 });
 
+test('check to see that initial user state is undefined', () => {
+	const wrapper = shallow(<App />);
+});
+
 test('clicking on button updates the user state', () => {
 	const wrapper = shallow(<App />);
 
@@ -41,14 +45,17 @@ test('clicking on button updates the user state', () => {
 	expect(user).toBe('John Doe');
 });
 
-test('mocking an API call with fixture data', async () => {
+test('mocking an API call with fixture data', (done) => {
 	const wrapper = shallow(<App />);
 
 	const button = wrapper.find("[data-test='get-post-button']");
 
 	button.simulate('click');
 
-	const post = await fetchPost();
-
-	expect(post.title).toBe('mock title');
+	setTimeout(() => {
+		const postTitle = wrapper.find("[data-test='post-title']").text();
+		wrapper.update();
+		expect(postTitle).toBe('mock title');
+		done();
+	});
 });
