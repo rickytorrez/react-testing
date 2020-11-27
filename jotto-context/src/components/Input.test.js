@@ -9,7 +9,7 @@ import Input from './Input';
  * @param {string} secretWord - Component prop specific to this group
  * @returns {ShallowWrapper}
  */
-const setup = (secretWord = '') => {
+const setup = (secretWord = 'party') => {
 	return shallow(<Input secretWord={secretWord} />);
 };
 
@@ -24,11 +24,16 @@ test('does not throw warning with expected props', () => {
 });
 
 describe('state controlled input field', () => {
-	test('state updates with value of input box upon change', () => {
-		const mockSetCurrentGuess = jest.fn();
-		React.useState = jest.fn(() => ['', mockSetCurrentGuess]);
+	let mockSetCurrentGuess = jest.fn();
+	let wrapper;
 
-		const wrapper = setup();
+	beforeEach(() => {
+		mockSetCurrentGuess.mockClear();
+		React.useState = jest.fn(() => ['', mockSetCurrentGuess]);
+		wrapper = setup();
+	});
+
+	test('state updates with value of input box upon change', () => {
 		const inputBox = findByTestAttr(wrapper, 'input-box');
 
 		// The effect of these two lines is simulating inputBox getting a value of 'train'
@@ -36,5 +41,12 @@ describe('state controlled input field', () => {
 		inputBox.simulate('change', mockEvent);
 
 		expect(mockSetCurrentGuess).toHaveBeenCalledWith('train');
+	});
+
+	test('field is cleared upon submit button click', () => {
+		const submitButton = findByTestAttr(wrapper, 'submit-button');
+
+		submitButton.simulate('click', { preventDefault() {} });
+		expect(mockSetCurrentGuess).toHaveBeenCalledWith('');
 	});
 });
